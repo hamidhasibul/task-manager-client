@@ -20,6 +20,7 @@ import { isAxiosError } from "axios";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  fetchCategories: () => void;
 };
 
 const formSchema = z.object({
@@ -28,7 +29,11 @@ const formSchema = z.object({
 
 export type AddCategoryValues = z.infer<typeof formSchema>;
 
-export default function AddCategoryModal({ isOpen, onClose }: Props) {
+export default function AddCategoryModal({
+  isOpen,
+  onClose,
+  fetchCategories,
+}: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const form = useForm<AddCategoryValues>({
     resolver: zodResolver(formSchema),
@@ -50,6 +55,7 @@ export default function AddCategoryModal({ isOpen, onClose }: Props) {
         toast.success("Category added successfully");
         form.reset();
         onClose();
+        fetchCategories();
       }
     } catch (error) {
       if (isAxiosError(error)) {
