@@ -52,8 +52,10 @@ export default function CategoryCard({
         category={category}
         fetchCategories={fetchCategories}
       />
-      <div className="flex items-center justify-between bg-gray-400 p-2 rounded-lg">
-        <p className="text-white font-semibold capitalize">{category.name}</p>
+      <div className="flex items-center justify-between bg-gray-200 p-2 rounded-lg">
+        <p className="text-gray-600 font-semibold capitalize">
+          {category.name}
+        </p>
         <div className="flex items-center gap-2">
           <Button
             variant={"destructive"}

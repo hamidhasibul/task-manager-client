@@ -88,7 +88,7 @@ export default function DropdownTask({ task, children, fetchTasks }: Props) {
         fetchTasks={fetchTasks}
       />
       <DropdownMenu>
-        <DropdownMenuTrigger className={buttonVariants()}>
+        <DropdownMenuTrigger className={buttonVariants({ variant: "ghost" })}>
           {children}
         </DropdownMenuTrigger>
         <DropdownMenuContent>

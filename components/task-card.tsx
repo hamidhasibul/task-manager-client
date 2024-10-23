@@ -9,8 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { EllipsisVertical } from "lucide-react";
+import { CalendarClock, EllipsisVertical } from "lucide-react";
 import DropdownTask from "@/components/dropdown-task";
+import { cn } from "@/lib/utils";
 
 type Props = {
   task: Task;
@@ -19,24 +20,49 @@ type Props = {
 
 export default function TaskCard({ task, fetchTasks }: Props) {
   return (
-    <Card>
+    <Card className="flex flex-col h-full">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>{task?.title}</span>
+          <h3 className="text-lg capitalize">{task?.title}</h3>
           <DropdownTask task={task} fetchTasks={fetchTasks}>
             <EllipsisVertical />
           </DropdownTask>
         </CardTitle>
-        <CardDescription className="flex flex-col">
-          <span>{task?.status}</span> <span>{task?.Category.name}</span>
+        <CardDescription className="flex items-center justify-between gap-2">
+          <p
+            className={cn(
+              "text-xs capitalize p-1 rounded-lg",
+              task?.status === "PENDING" && "bg-orange-100 text-orange-500",
+              task?.status === "COMPLETED" && "bg-teal-100 text-teal-500"
+            )}
+          >
+            {task?.status.toLowerCase()}
+          </p>
+          <p className="text-xs font-semibold capitalize bg-blue-100 text-blue-500 p-2 rounded-lg">
+            {task?.Category.name}
+          </p>
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <p>{task?.description}</p>
+      <CardContent className="flex-grow">
+        <p className="text-sm text-gray-800">{task?.description}</p>
       </CardContent>
-      <CardFooter className="flex items-center justify-between">
-        <span>Due on {format(task?.dueDate, "dd/MM/yyyy")}</span>
-        <span className="font-bold">{task.priority.toLowerCase()}</span>
+      <CardFooter className="flex items-center justify-between mt-auto">
+        <div className="flex items-center gap-2">
+          <CalendarClock />
+          <p className="text-sm font-semibold">
+            {format(task?.dueDate, "dd/MM/yyyy")}
+          </p>
+        </div>
+        <span
+          className={cn(
+            "font-bold capitalize text-sm p-2 rounded-lg",
+            task.priority === "HIGH" && "bg-red-100 text-red-500",
+            task.priority === "NORMAL" && "bg-yellow-100 text-yellow-500",
+            task.priority === "LOW" && "bg-green-100 text-green-500"
+          )}
+        >
+          {task.priority.toLowerCase()}
+        </span>
       </CardFooter>
     </Card>
   );

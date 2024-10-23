@@ -7,7 +7,7 @@ import AddCategoryModal from "@/components/add-category-modal";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { axiosIns } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { Filter, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
@@ -128,11 +128,16 @@ export default function Home() {
         <div className="md:w-2/3 bg-gray-100 p-4 rounded-lg space-y-4">
           <h3 className="font-bold text-xl">Tasks</h3>
           <div className="flex items-center justify-between">
-            <Button onClick={taskModal.handleOpen}>
+            <Button
+              onClick={taskModal.handleOpen}
+              className="bg-gray-500 hover:bg-gray-500/90"
+            >
               <Plus /> Add task
             </Button>
             <div className="flex items-center gap-2">
-              <p>Filter by</p>
+              <p className="flex items-center gap-2 text-xs">
+                <Filter className="h-4 w-4" /> Filters
+              </p>
 
               {/* Status Filter */}
               <Select
@@ -195,12 +200,28 @@ export default function Home() {
               </Select>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-4">{renderTasks}</div>
+          <div className="grid grid-cols-3 gap-4">
+            {isLoading && (
+              <>
+                <p>Loading</p>
+              </>
+            )}
+            {tasks?.length === 0 && !isLoading ? (
+              <>
+                <p>No tasks at this moment. Add one.</p>
+              </>
+            ) : (
+              <>{renderTasks}</>
+            )}
+          </div>
         </div>
         {/* Categories */}
-        <div className="md:w-1/3 bg-gray-100 p-4 rounded-lg space-y-4">
+        <div className="md:w-1/3 p-4 rounded-lg space-y-4">
           <h3 className="font-bold text-xl">Categories</h3>
-          <Button onClick={categoryModal.handleOpen}>
+          <Button
+            onClick={categoryModal.handleOpen}
+            className="bg-gray-500 hover:bg-gray-500/90"
+          >
             <Plus />
             Category
           </Button>
