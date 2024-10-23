@@ -12,6 +12,8 @@ import { type Task } from "@/types/task";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
 import { axiosIns } from "@/lib/utils";
+import { useModal } from "@/hooks/useModal";
+import EditTaskModal from "./edit-task-modal";
 type Props = {
   task: Task;
   fetchTasks: () => void;
@@ -20,6 +22,8 @@ type Props = {
 
 export default function DropdownTask({ task, children, fetchTasks }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const editTaskModal = useModal();
   async function toggleStatus() {
     setIsLoading(true);
     const data = {
@@ -76,28 +80,43 @@ export default function DropdownTask({ task, children, fetchTasks }: Props) {
     }
   }
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className={buttonVariants()}>
-        {children}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {task?.status === "COMPLETED" && (
-          <DropdownMenuItem onClick={toggleStatus} disabled={isLoading}>
-            Mark as pending
-          </DropdownMenuItem>
-        )}
-        {task?.status === "PENDING" && (
-          <DropdownMenuItem onClick={toggleStatus} disabled={isLoading}>
-            Mark as completed
-          </DropdownMenuItem>
-        )}
+    <>
+      <EditTaskModal
+        isOpen={editTaskModal.isOpen}
+        onClose={editTaskModal.handleClose}
+        task={task}
+        fetchTasks={fetchTasks}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger className={buttonVariants()}>
+          {children}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {task?.status === "COMPLETED" && (
+            <DropdownMenuItem onClick={toggleStatus} disabled={isLoading}>
+              Mark as pending
+            </DropdownMenuItem>
+          )}
+          {task?.status === "PENDING" && (
+            <DropdownMenuItem onClick={toggleStatus} disabled={isLoading}>
+              Mark as completed
+            </DropdownMenuItem>
+          )}
 
-        <DropdownMenuItem onClick={deleteTask} disabled={isLoading}>
-          Delete task
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <DropdownMenuItem onClick={deleteTask} disabled={isLoading}>
+            Delete task
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={editTaskModal.handleOpen}
+            disabled={isLoading}
+          >
+            Edit task
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }
