@@ -110,7 +110,7 @@ export default function Home() {
   }, [taskStatus, taskPriority, taskCategory]);
 
   return (
-    <div className="flex flex-col bg-gray-100 text-gray-900 w-full p-4 rounded">
+    <div className="flex flex-col  text-gray-900 w-full p-4 rounded">
       <AddCategoryModal
         isOpen={categoryModal.isOpen}
         onClose={categoryModal.handleClose}
@@ -123,10 +123,10 @@ export default function Home() {
         fetchTasks={fetchTasks}
       />
       <Header title="Task Manager" />
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-8">
         {/* Tasks */}
-        <div className="md:w-2/3">
-          <h3 className="text-center font-bold">Tasks</h3>
+        <div className="md:w-2/3 bg-gray-100 p-4 rounded-lg space-y-4">
+          <h3 className="font-bold text-xl">Tasks</h3>
           <div className="flex items-center justify-between">
             <Button onClick={taskModal.handleOpen}>
               <Plus /> Add task
@@ -195,16 +195,16 @@ export default function Home() {
               </Select>
             </div>
           </div>
-          <div className="grid grid-cols-3">{renderTasks}</div>
+          <div className="grid grid-cols-3 gap-4">{renderTasks}</div>
         </div>
         {/* Categories */}
-        <div className="md:w-1/3">
-          <h3 className="text-center font-bold">Categories</h3>
-          <Button className="w-full" onClick={categoryModal.handleOpen}>
+        <div className="md:w-1/3 bg-gray-100 p-4 rounded-lg space-y-4">
+          <h3 className="font-bold text-xl">Categories</h3>
+          <Button onClick={categoryModal.handleOpen}>
             <Plus />
             Category
           </Button>
-          <div className="">
+          <div className="space-y-4 h-[600px] overflow-y-auto">
             {categories?.length === 0 && !isLoading && (
               <>
                 <p>No categories found. Add one.</p>

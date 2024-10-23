@@ -52,21 +52,24 @@ export default function CategoryCard({
         category={category}
         fetchCategories={fetchCategories}
       />
-      <p className="capitalize">
-        {category.name}
-        <Button
-          variant={"destructive"}
-          onClick={() => {
-            deleteCategory(category.id);
-          }}
-        >
-          <Trash />
-        </Button>
+      <div className="flex items-center justify-between bg-gray-400 p-2 rounded-lg">
+        <p className="text-white font-semibold capitalize">{category.name}</p>
+        <div className="flex items-center gap-2">
+          <Button
+            variant={"destructive"}
+            onClick={() => {
+              deleteCategory(category.id);
+            }}
+            size={"icon"}
+          >
+            <Trash />
+          </Button>
 
-        <Button onClick={editCategoryModal.handleOpen}>
-          <Pencil />
-        </Button>
-      </p>
+          <Button onClick={editCategoryModal.handleOpen} size={"icon"}>
+            <Pencil />
+          </Button>
+        </div>
+      </div>
     </>
   );
 }
