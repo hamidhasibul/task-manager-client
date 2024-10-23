@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "./ui/button";
 import { EllipsisVertical } from "lucide-react";
+import DropdownTask from "@/components/dropdown-task";
 
 type Props = {
   task: Task;
@@ -22,9 +22,9 @@ export default function TaskCard({ task }: Props) {
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>{task?.title}</span>
-          <Button className="rounded-full" variant={"ghost"}>
+          <DropdownTask task={task}>
             <EllipsisVertical />
-          </Button>
+          </DropdownTask>
         </CardTitle>
         <CardDescription className="flex flex-col">
           <span>{task?.status}</span> <span>{task?.Category.name}</span>

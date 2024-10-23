@@ -15,7 +15,7 @@ import { Input } from "./ui/input";
 import { Category } from "@/types/category";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
+import { axiosIns, cn } from "@/lib/utils";
 import {
   Command,
   CommandEmpty,
@@ -35,6 +35,8 @@ import {
 import { Textarea } from "./ui/textarea";
 import { format } from "date-fns";
 import { Calendar } from "./ui/calendar";
+import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 type Props = {
   isOpen: boolean;
@@ -53,7 +55,12 @@ const formSchema = z.object({
 
 export type AddTaskValues = z.infer<typeof formSchema>;
 
-export default function AddTaskModal({ isOpen, onClose, categories }: Props) {
+export default function AddTaskModal({
+  isOpen,
+  onClose,
+  categories,
+  fetchTasks,
+}: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [search, setSearch] = useState("");
 
@@ -73,7 +80,29 @@ export default function AddTaskModal({ isOpen, onClose, categories }: Props) {
   );
 
   async function onSubmit(data: AddTaskValues) {
-    console.log(data);
+    setIsLoading(true);
+    try {
+      const response = await axiosIns.post("/tasks", data);
+      if (!response.data.success) {
+        toast.error(response.data.message);
+      }
+
+      if (response.data.success) {
+        toast.success("Task added successfully");
+        form.reset();
+        onClose();
+        fetchTasks();
+      }
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      } else {
+        toast.error("Something went wrong");
+      }
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -254,7 +283,9 @@ export default function AddTaskModal({ isOpen, onClose, categories }: Props) {
             )}
           />
 
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={isLoading}>
+            Submit
+          </Button>
         </form>
       </Form>
     </Modal>

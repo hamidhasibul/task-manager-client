@@ -88,6 +88,9 @@ export default function Home() {
 
   useEffect(() => {
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
     fetchTasks();
   }, []);
 
