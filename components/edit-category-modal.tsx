@@ -1,7 +1,9 @@
-import { z } from "zod";
+import React, { useState } from "react";
 import Modal from "./modal";
+import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Category } from "@/types/category";
 import {
   Form,
   FormControl,
@@ -10,16 +12,16 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
+import { isAxiosError } from "axios";
+import { toast } from "sonner";
+import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { axiosIns } from "@/lib/utils";
-import { Button } from "./ui/button";
-import { toast } from "sonner";
-import { useState } from "react";
-import { isAxiosError } from "axios";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  category: Category;
   fetchCategories: () => void;
 };
 
@@ -27,33 +29,31 @@ const formSchema = z.object({
   name: z.string().min(2).max(20),
 });
 
-export type AddCategoryValues = z.infer<typeof formSchema>;
-
-export default function AddCategoryModal({
+export type EditCategoryValues = z.infer<typeof formSchema>;
+export default function EditCategoryModal({
   isOpen,
   onClose,
+  category,
   fetchCategories,
 }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const form = useForm<AddCategoryValues>({
+  const form = useForm<EditCategoryValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name: category.name,
     },
   });
 
-  async function onSubmit(data: AddCategoryValues) {
-    setIsLoading(true);
+  async function onSubmit(data: EditCategoryValues) {
     try {
-      const response = await axiosIns.post("/categories", data);
+      const response = await axiosIns.patch(`/categories/${category.id}`, data);
 
       if (!response.data.success) {
         toast.error(response.data.message);
       }
 
       if (response.data.success) {
-        toast.success("Category added successfully");
-        form.reset();
+        toast.success("Category updated successfully");
         onClose();
         fetchCategories();
       }
@@ -70,8 +70,8 @@ export default function AddCategoryModal({
   }
   return (
     <Modal
-      title="Add Category"
-      description="Add a new category"
+      title="Edit Category"
+      description="Edit existing category"
       isOpen={isOpen}
       onClose={onClose}
     >
@@ -91,7 +91,7 @@ export default function AddCategoryModal({
             )}
           />
 
-          <Button disabled={isLoading}>Create</Button>
+          <Button disabled={isLoading}>Submit</Button>
         </form>
       </Form>
     </Modal>

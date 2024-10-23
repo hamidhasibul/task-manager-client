@@ -1,10 +1,12 @@
 import { type Category } from "@/types/category";
 import React, { Dispatch, SetStateAction } from "react";
 import { Button } from "./ui/button";
-import { Trash } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
 import { axiosIns } from "@/lib/utils";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
+import { useModal } from "@/hooks/useModal";
+import EditCategoryModal from "./edit-category-modal";
 
 type Props = {
   category: Category;
@@ -17,6 +19,7 @@ export default function CategoryCard({
   fetchCategories,
   setIsLoading,
 }: Props) {
+  const editCategoryModal = useModal();
   async function deleteCategory(categoryId: string) {
     setIsLoading(true);
     try {
@@ -42,16 +45,28 @@ export default function CategoryCard({
     }
   }
   return (
-    <p className="capitalize">
-      {category.name}
-      <Button
-        variant={"destructive"}
-        onClick={() => {
-          deleteCategory(category.id);
-        }}
-      >
-        <Trash />
-      </Button>
-    </p>
+    <>
+      <EditCategoryModal
+        isOpen={editCategoryModal.isOpen}
+        onClose={editCategoryModal.handleClose}
+        category={category}
+        fetchCategories={fetchCategories}
+      />
+      <p className="capitalize">
+        {category.name}
+        <Button
+          variant={"destructive"}
+          onClick={() => {
+            deleteCategory(category.id);
+          }}
+        >
+          <Trash />
+        </Button>
+
+        <Button onClick={editCategoryModal.handleOpen}>
+          <Pencil />
+        </Button>
+      </p>
+    </>
   );
 }
