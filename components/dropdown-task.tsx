@@ -14,10 +14,11 @@ import { toast } from "sonner";
 import { axiosIns } from "@/lib/utils";
 type Props = {
   task: Task;
+  fetchTasks: () => void;
   children: ReactNode;
 };
 
-export default function DropdownTask({ task, children }: Props) {
+export default function DropdownTask({ task, children, fetchTasks }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   async function toggleStatus() {
     setIsLoading(true);
@@ -37,6 +38,31 @@ export default function DropdownTask({ task, children }: Props) {
 
       if (response.data.success) {
         toast.success(`Marked as ${data.status.toLowerCase()}`);
+        fetchTasks();
+      }
+    } catch (error) {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      } else {
+        toast.error("Something went wrong");
+      }
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function deleteTask() {
+    setIsLoading(true);
+    try {
+      const response = await axiosIns.delete(`/tasks/${task.id}`);
+      if (!response.data.success) {
+        toast.error(response.data.message);
+      }
+
+      if (response.data.success) {
+        toast.success(`Task deleted successfully`);
+        fetchTasks();
       }
     } catch (error) {
       if (isAxiosError(error)) {
@@ -67,6 +93,10 @@ export default function DropdownTask({ task, children }: Props) {
             Mark as completed
           </DropdownMenuItem>
         )}
+
+        <DropdownMenuItem onClick={deleteTask} disabled={isLoading}>
+          Delete task
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

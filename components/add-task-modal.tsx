@@ -46,7 +46,7 @@ type Props = {
 };
 
 const formSchema = z.object({
-  title: z.string().min(2).max(10),
+  title: z.string().min(2).max(20),
   description: z.string().min(1),
   dueDate: z.date(),
   priority: z.string(),

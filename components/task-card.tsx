@@ -14,15 +14,16 @@ import DropdownTask from "@/components/dropdown-task";
 
 type Props = {
   task: Task;
+  fetchTasks: () => void;
 };
 
-export default function TaskCard({ task }: Props) {
+export default function TaskCard({ task, fetchTasks }: Props) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>{task?.title}</span>
-          <DropdownTask task={task}>
+          <DropdownTask task={task} fetchTasks={fetchTasks}>
             <EllipsisVertical />
           </DropdownTask>
         </CardTitle>
